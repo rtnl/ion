@@ -23,5 +23,5 @@ Every object is serialized as `kind;self`.
 
 | Object        | Serialized                   |
 |---------------|------------------------------|
-| "hello world" | [060B68656C6C6F20776F726C64] |
+| "hello world" | [050B68656C6C6F20776F726C64] |
 | (u16) 1337    | [020539]                     |

@@ -6,6 +6,7 @@ t_ion_buffer *ion_buffer_new() {
   t_ion_buffer *self;
 
   self = malloc(sizeof(t_ion_buffer));
+  self->state = ion_buffer_state_new();
   self->body = malloc(sizeof(uint8_t) * SIZE_DEFAULT);
   self->size = SIZE_DEFAULT;
   self->curr = 0;

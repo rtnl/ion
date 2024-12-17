@@ -13,8 +13,8 @@ Ion is a minimalist protocol for serializing structured data.
 | 0x02  | u16  | short | 2    | u16:self                 | Represents 16 bit numbers                                   |
 | 0x03  | u32  | int   | 4    | u32:self                 | Represents 32 bit numbers                                   |
 | 0x04  | u64  | long  | 8    | u64:self                 | Represents 64 bit numbers, pointers                         |
-| 0x05  | arr  | array | 16+  | u8:item;u8:size;[object] | Represents arrays, strings, tuples                          |
-| 0x06  | list | list  | 8+   | u8:size;[object]         | Represents lists                                            |
+| 0x05  | arr  | array | 2+   | u8:item;u8:size;[object] | Represents arrays, strings, tuples                          |
+| 0x06  | list | list  | 1+   | u8:size;[object]         | Represents lists                                            |
 
 Object kinds are represented using their index in u8 type. \
 Every object is serialized as `kind;self`.

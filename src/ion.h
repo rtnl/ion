@@ -13,11 +13,18 @@ typedef struct s_ion_buffer {
 
 extern const size_t SIZE_DEFAULT;
 
+// math
 size_t min_sizet(size_t x, size_t y);
+
+// buffer
 t_ion_buffer *ion_buffer_new();
 void ion_buffer_free(t_ion_buffer *self);
 void ion_buffer_write(t_ion_buffer *self, void *src, size_t len);
 void ion_buffer_read(t_ion_buffer *self, void *dst, size_t len);
 uint8_t *ion_buffer_consume(t_ion_buffer *self);
+
+// buffer_io
+void ion_buffer_io_write()
+
 
 #endif

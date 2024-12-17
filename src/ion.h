@@ -19,6 +19,7 @@ typedef enum e_ion_object_kind {
 typedef struct s_ion_buffer_state {
   t_ion_object_kind io_write_current;
   size_t io_write_current_start;
+  uint8_t io_write_current_length;
 }   t_ion_buffer_state;
 
 typedef struct s_ion_buffer {
@@ -56,5 +57,8 @@ void ion_buffer_io_write_u16(t_ion_buffer *self, uint16_t value);
 void ion_buffer_io_write_u32(t_ion_buffer *self, uint32_t value);
 void ion_buffer_io_write_u64(t_ion_buffer *self, uint64_t value);
 void ion_buffer_io_write_arr(t_ion_buffer *self, t_ion_object_kind kind, void *value, uint8_t len);
+void ion_buffer_io_write_list_open(t_ion_buffer *self);
+void ion_buffer_io_write_list_item(t_ion_buffer *self, t_ion_object_kind kind, void *value);
+void ion_buffer_io_write_list_close(t_ion_buffer *self);
 
 #endif

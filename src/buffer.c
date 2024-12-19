@@ -22,17 +22,48 @@ void ion_buffer_free(t_ion_buffer *self) {
   free(self);
 }
 
-void ion_buffer_write(t_ion_buffer *self, void *src, size_t len) {
+t_ion_buffer *ion_buffer_clone(t_ion_buffer *self) {
+  t_ion_buffer *other;
+
+  if (self == NULL)
+    return (NULL);
+
+  other = malloc(sizeof(t_ion_buffer));
+  other->size = self->size;
+  other->curr = self->curr;
+  other->body = malloc(self->size);
+
+  memcpy(other->body, self->body, self->curr);
+
+  return (other);
+}
+
+t_ion_result_code ion_buffer_seek(t_ion_buffer *self, uint8_t curr) {
+  if (self == NULL)
+    return RESULT_ERROR;
+
+  if (curr < 0)
+    return RESULT_ERROR;
+
+  if (curr >= self->size)
+    return RESULT_ERROR;
+
+  self->curr = curr;
+
+  return RESULT_OK;
+}
+
+t_ion_result_code ion_buffer_write(t_ion_buffer *self, void *src, size_t len) {
   uint8_t *srcPtr;
   size_t x;
   size_t curr;
   size_t size;
 
   if (self == NULL)
-    return;
+    return RESULT_ERROR;
 
   if (src == NULL)
-    return;
+    return RESULT_ERROR;
 
   srcPtr = (uint8_t *)src;
 
@@ -47,25 +78,35 @@ void ion_buffer_write(t_ion_buffer *self, void *src, size_t len) {
     self->body[curr + x] = srcPtr[x];
   }
   self->curr += len;
+
+  return RESULT_OK;
 }
 
-void ion_buffer_read(t_ion_buffer *self, void *dst, size_t len) {
+t_ion_result_code ion_buffer_read(t_ion_buffer *self, void *dst, size_t len) {
   uint8_t *dstPtr;
   size_t t;
   size_t x;
 
   if (self == NULL)
-    return;
+    return RESULT_ERROR;
 
   if (dst == NULL)
-    return;
+    return RESULT_ERROR;
+
+  if ((self->curr + len) >= self->size) {
+    return RESULT_ERROR;
+  }
 
   dstPtr = (uint8_t *)dst;
 
-  t = min_sizet(self->curr, len);
+  t = min_sizet(self->size - self->curr, len);
   for (x = 0; x < t; x++) {
-    dstPtr[x] = self->body[x];
+    dstPtr[x] = self->body[self->curr + x];
   }
+
+  self->curr += t;
+
+  return RESULT_OK;
 }
 
 uint8_t *ion_buffer_consume(t_ion_buffer *self) {

@@ -2,7 +2,7 @@
 
 # Ion
 
-Ion is a minimalist protocol for serializing structured data.
+Ion is a minimalist binary format for structured data.
 
 ## Supported types
 

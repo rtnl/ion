@@ -53,11 +53,13 @@ t_ion_result_code ion_buffer_read(t_ion_buffer *self, void *dst, size_t len) {
   return vector_read(self->body, dst, len);
 }
 
-uint8_t *ion_buffer_consume(t_ion_buffer *self) {
+uint8_t *ion_buffer_consume(t_ion_buffer *self, size_t *len) {
   uint8_t *result;
 
   if (self == NULL)
     return (NULL);
+
+  *len = self->body->unit * self->body->curr;
 
   result = vector_consume(vector_clone(self->body));
 

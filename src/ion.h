@@ -78,7 +78,7 @@ t_ion_buffer *ion_buffer_clone(t_ion_buffer *self);
 t_ion_result_code ion_buffer_seek(t_ion_buffer *self, uint8_t curr);
 t_ion_result_code ion_buffer_write(t_ion_buffer *self, void *src, size_t len);
 t_ion_result_code ion_buffer_read(t_ion_buffer *self, void *dst, size_t len);
-uint8_t *ion_buffer_consume(t_ion_buffer *self);
+uint8_t *ion_buffer_consume(t_ion_buffer *self, size_t *len);
 
 // buffer_state
 t_ion_buffer_state *ion_buffer_state_new();

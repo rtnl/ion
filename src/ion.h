@@ -83,6 +83,7 @@ uint8_t *ion_buffer_consume(t_ion_buffer *self, size_t *len);
 // buffer_state
 t_ion_buffer_state *ion_buffer_state_new();
 void ion_buffer_state_free(t_ion_buffer_state *self);
+t_ion_buffer_state *ion_buffer_state_clone(t_ion_buffer_state *self);
 t_ion_result_code ion_buffer_state_io_write_increment(t_ion_buffer *self, t_ion_object_kind kind);
 t_ion_result_code ion_buffer_state_io_read_increment(t_ion_buffer *self, t_ion_object_kind kind);
 t_ion_buffer_state_io_entry *ion_buffer_state_io_entry_new(t_ion_object_kind kind, t_ion_object_kind item, size_t start);

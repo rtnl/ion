@@ -27,7 +27,7 @@ t_ion_buffer *ion_buffer_clone(t_ion_buffer *self) {
 
   other = malloc(sizeof(t_ion_buffer));
   other->body = vector_clone(self->body);
-  other->state = self->state;
+  other->state = ion_buffer_state_clone(self->state);
 
   return (other);
 }

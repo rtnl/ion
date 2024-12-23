@@ -39,6 +39,19 @@ void ion_buffer_state_free(t_ion_buffer_state *self) {
   free(self);
 }
 
+t_ion_buffer_state *ion_buffer_state_clone(t_ion_buffer_state *self) {
+	t_ion_buffer_state *other;
+
+	if (self == NULL)
+		return (NULL);
+
+	other = malloc(sizeof(t_ion_buffer_state));
+	other->entry_level = self->entry_level;
+	other->entry_list = vector_clone(self->entry_list);
+
+	return (other);
+}
+
 t_ion_result_code ion_buffer_state_io_write_increment(t_ion_buffer *self,
                                                       t_ion_object_kind kind) {
   t_ion_result_code result;

@@ -40,16 +40,16 @@ void ion_buffer_state_free(t_ion_buffer_state *self) {
 }
 
 t_ion_buffer_state *ion_buffer_state_clone(t_ion_buffer_state *self) {
-	t_ion_buffer_state *other;
+  t_ion_buffer_state *other;
 
-	if (self == NULL)
-		return (NULL);
+  if (self == NULL)
+    return (NULL);
 
-	other = malloc(sizeof(t_ion_buffer_state));
-	other->entry_level = self->entry_level;
-	other->entry_list = vector_clone(self->entry_list);
+  other = malloc(sizeof(t_ion_buffer_state));
+  other->entry_level = self->entry_level;
+  other->entry_list = vector_clone(self->entry_list);
 
-	return (other);
+  return (other);
 }
 
 t_ion_result_code ion_buffer_state_io_write_increment(t_ion_buffer *self,
@@ -212,15 +212,57 @@ t_ion_result_code ion_buffer_state_io_read_increment(t_ion_buffer *self,
 }
 
 t_ion_result_code ion_buffer_state_io_read_open(t_ion_buffer *self,
+                                                t_ion_object_kind kind,
+                                                t_ion_object_kind *kind_item,
                                                 uint8_t *len) {
   t_ion_result_code result;
   t_ion_buffer_state *state;
+  t_ion_buffer_state_io_entry *entry;
+  size_t start;
+  t_ion_object_kind val_kind;
 
   if (self == NULL)
     return RESULT_ERROR;
 
   state = self->state;
   state->entry_level++;
+
+  start = self->body->curr;
+
+  result = ion_buffer_io_read_kind(self, &val_kind);
+  if (result != RESULT_OK) {
+    return (result);
+  }
+
+  switch (val_kind) {
+  case ARR: {
+    result = ion_buffer_io_read_kind(self, &val_kind);
+    if (result != RESULT_OK) {
+      return (result);
+    }
+
+    *kind_item = val_kind;
+
+    result = ion_buffer_io_read_data(self, U8, len);
+    if (result != RESULT_OK) {
+      return (result);
+    }
+
+    break;
+  }
+
+  case LIST:
+    break;
+
+  default:
+    return (RESULT_ERROR);
+  }
+
+  entry = ion_buffer_state_io_entry_new(kind, val_kind, start);
+  result = vector_write(state->entry_list, (void **)&entry, 1);
+  if (result != RESULT_OK) {
+    return (result);
+  }
 
   return RESULT_OK;
 }

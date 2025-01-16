@@ -32,11 +32,18 @@ t_ion_buffer *ion_buffer_clone(t_ion_buffer *self) {
   return (other);
 }
 
-t_ion_result_code ion_buffer_seek(t_ion_buffer *self, uint8_t curr) {
+t_ion_result_code ion_buffer_seek_read(t_ion_buffer *self, uint8_t curr) {
   if (self == NULL)
     return RESULT_ERROR;
 
-  return vector_seek(self->body, (size_t) curr);
+  return vector_seek_read(self->body, (size_t)curr);
+}
+
+t_ion_result_code ion_buffer_seek_write(t_ion_buffer *self, uint8_t curr) {
+  if (self == NULL)
+    return RESULT_ERROR;
+
+  return vector_seek_write(self->body, (size_t)curr);
 }
 
 t_ion_result_code ion_buffer_write(t_ion_buffer *self, void *src, size_t len) {
@@ -59,7 +66,7 @@ uint8_t *ion_buffer_consume(t_ion_buffer *self, size_t *len) {
   if (self == NULL)
     return (NULL);
 
-  *len = self->body->unit * self->body->curr;
+  *len = self->body->unit * self->body->curr_w;
 
   result = vector_consume(vector_clone(self->body));
 

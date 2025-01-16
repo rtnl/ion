@@ -14,7 +14,8 @@ typedef struct s_ion_vector {
     void *body;
     size_t unit;
     size_t size;
-    size_t curr;
+    size_t curr_r;
+    size_t curr_w;
 } t_ion_vector;
 
 typedef enum e_ion_result_code {
@@ -61,8 +62,10 @@ size_t ion_object_kind_size(t_ion_object_kind kind);
 // vector
 t_ion_vector *vector_new(size_t unit);
 t_ion_vector *vector_clone(t_ion_vector *self);
-t_ion_result_code vector_seek(t_ion_vector *self, size_t index);
-t_ion_result_code vector_seek_relative(t_ion_vector *self, size_t diff);
+t_ion_result_code vector_seek_read(t_ion_vector *self, size_t index);
+t_ion_result_code vector_seek_write(t_ion_vector *self, size_t index);
+t_ion_result_code vector_seek_relative_read(t_ion_vector *self, size_t diff);
+t_ion_result_code vector_seek_relative_write(t_ion_vector *self, size_t diff);
 t_ion_result_code vector_extend(t_ion_vector *self);
 t_ion_result_code vector_write(t_ion_vector *self, void *src, size_t len);
 t_ion_result_code vector_read(t_ion_vector *self, void *dst, size_t len);
@@ -75,7 +78,8 @@ void vector_display(t_ion_vector *self);
 t_ion_buffer *ion_buffer_new();
 void ion_buffer_free(t_ion_buffer *self);
 t_ion_buffer *ion_buffer_clone(t_ion_buffer *self);
-t_ion_result_code ion_buffer_seek(t_ion_buffer *self, uint8_t curr);
+t_ion_result_code ion_buffer_seek_read(t_ion_buffer *self, uint8_t curr);
+t_ion_result_code ion_buffer_seek_write(t_ion_buffer *self, uint8_t curr);
 t_ion_result_code ion_buffer_write(t_ion_buffer *self, void *src, size_t len);
 t_ion_result_code ion_buffer_read(t_ion_buffer *self, void *dst, size_t len);
 uint8_t *ion_buffer_consume(t_ion_buffer *self, size_t *len);

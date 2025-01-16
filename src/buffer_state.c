@@ -107,7 +107,7 @@ t_ion_result_code ion_buffer_state_io_write_open(t_ion_buffer *self,
   state = self->state;
   state->entry_level++;
 
-  start = self->body->curr;
+  start = self->body->curr_w;
 
   val_kind = kind;
   result = ion_buffer_write(self, &val_kind, 1);
@@ -198,7 +198,7 @@ t_ion_result_code ion_buffer_state_io_write_close(t_ion_buffer *self) {
   state->entry_level--;
   ion_buffer_state_io_write_increment(self, entry->kind);
   ion_buffer_state_io_entry_free(entry);
-  vector_seek_relative(state->entry_list, -1);
+  vector_seek_relative_write(state->entry_list, -1);
 
   return RESULT_OK;
 }
@@ -227,7 +227,7 @@ t_ion_result_code ion_buffer_state_io_read_open(t_ion_buffer *self,
   state = self->state;
   state->entry_level++;
 
-  start = self->body->curr;
+  start = self->body->curr_w;
 
   result = ion_buffer_io_read_kind(self, &val_kind);
   if (result != RESULT_OK) {

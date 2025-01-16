@@ -166,6 +166,25 @@ t_ion_result_code vector_set(t_ion_vector *self, void **value, size_t index) {
   return RESULT_OK;
 }
 
+t_ion_result_code vector_reduce(t_ion_vector *self) {
+  size_t offset;
+  size_t size;
+  void *buffer;
+
+  if (self == NULL) {
+    return RESULT_ERROR;
+  }
+
+  offset = min_sizet(self->curr_r, self->curr_w);
+  size = self->unit * self->size;
+  buffer = malloc(size);
+  memcpy(buffer, self->body + offset, size);
+  free(self->body);
+  self->body = buffer;
+
+  return RESULT_OK;
+}
+
 void *vector_consume(t_ion_vector *self) {
   void *result;
 

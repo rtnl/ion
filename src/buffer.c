@@ -60,6 +60,21 @@ t_ion_result_code ion_buffer_read(t_ion_buffer *self, void *dst, size_t len) {
   return vector_read(self->body, dst, len);
 }
 
+t_ion_result_code ion_buffer_reduce(t_ion_buffer *self) {
+  t_ion_result_code result;
+
+  if (self == NULL) {
+    return RESULT_ERROR;
+  }
+
+  result = vector_reduce(self->body);
+  if (result != RESULT_OK) {
+    return result;
+  }
+
+  return RESULT_OK;
+}
+
 uint8_t *ion_buffer_consume(t_ion_buffer *self, size_t *len) {
   uint8_t *result;
 

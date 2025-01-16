@@ -175,12 +175,15 @@ t_ion_result_code vector_reduce(t_ion_vector *self) {
     return RESULT_ERROR;
   }
 
+  // Todo: realloc and shrink
   offset = min_sizet(self->curr_r, self->curr_w);
   size = self->unit * self->size;
   buffer = malloc(size);
-  memcpy(buffer, self->body + offset, size);
+  memcpy(buffer, self->body + offset, size - offset);
   free(self->body);
   self->body = buffer;
+  self->curr_r -= offset;
+  self->curr_w -= offset;
 
   return RESULT_OK;
 }

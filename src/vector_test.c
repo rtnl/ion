@@ -73,6 +73,28 @@ Test(vector, vector_write_array) {
   for (x = 0; x < 1000000; x++) {
     cr_expect(t[x] == o[x]);
   }
+
+  free(vector_consume(vector));
+}
+
+Test(vector, vector_write_string) {
+  t_ion_result_code result;
+  t_ion_vector *vector;
+  char *src;
+  char dst[100] = {};
+
+  src = "In the beginning God created the heaven and the earth.";
+
+  vector = vector_new(sizeof(char));
+  cr_expect(vector != NULL);
+
+  result = vector_write(vector, src, strlen(src));
+  cr_expect(result == RESULT_OK);
+
+  result = vector_read(vector, dst, strlen(src));
+  cr_expect(result == RESULT_OK);
+
+  cr_expect(strcmp(src, dst) == 0);
 }
 
 #endif

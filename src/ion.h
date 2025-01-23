@@ -8,6 +8,10 @@
 #include <unistd.h>
 #include <stdbool.h>
 
+#ifdef TEST
+#include <criterion/criterion.h>
+#endif
+
 extern const size_t SIZE_DEFAULT;
 
 typedef struct s_ion_vector {

@@ -12,9 +12,6 @@ Test(vector, vector_create) {
   cr_expect(vector->size > 0);
   cr_expect(vector->curr_r == 0);
   cr_expect(vector->curr_w == 0);
-
-  // this should fail
-  cr_expect(1 == 0);
 }
 
 #endif

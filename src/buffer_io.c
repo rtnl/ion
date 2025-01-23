@@ -300,7 +300,7 @@ t_ion_result_code ion_buffer_io_write_list_close(t_ion_buffer *self) {
 t_ion_result_code ion_buffer_io_read_u0(t_ion_buffer *self) {
   t_ion_result_code result;
 
-  result = ion_buffer_io_read_kind(self, U0);
+  result = ion_buffer_io_check_kind(self, U0);
   if (result != RESULT_OK) {
     return result;
   }

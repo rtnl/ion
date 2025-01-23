@@ -104,13 +104,13 @@ t_ion_result_code vector_write(t_ion_vector *self, void *src, size_t len) {
   len_total = self->unit * len;
   curr_total = self->unit * self->curr_w;
 
-  if ((self->curr_w + len_total) >= self->size) {
+  while ((self->curr_w + len) >= self->size) {
     result = vector_extend(self);
     if (result != RESULT_OK)
       return result;
   }
 
-  memcpy(self->body + (self->unit * self->curr_w), src, len_total);
+  memcpy(self->body + curr_total, src, len_total);
   self->curr_w += len;
 
   return RESULT_OK;

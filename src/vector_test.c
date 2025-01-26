@@ -126,6 +126,10 @@ Test(vector, vector_peek) {
   cr_expect(vector->curr_r == strlen(src));
   cr_expect(vector->curr_p == vector->curr_r);
   cr_expect(strcmp(src, dst) == 0);
+
+  result = vector_seek_relative_read(vector, -10);
+  cr_expect(result == RESULT_OK);
+  cr_expect(vector->curr_p == vector->curr_r);
 }
 
 #endif

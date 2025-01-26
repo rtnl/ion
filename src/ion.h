@@ -85,10 +85,11 @@ void vector_display(t_ion_vector *self);
 t_ion_buffer *ion_buffer_new();
 void ion_buffer_free(t_ion_buffer *self);
 t_ion_buffer *ion_buffer_clone(t_ion_buffer *self);
-t_ion_result_code ion_buffer_seek_read(t_ion_buffer *self, uint8_t curr);
-t_ion_result_code ion_buffer_seek_write(t_ion_buffer *self, uint8_t curr);
+t_ion_result_code ion_buffer_seek_read(t_ion_buffer *self, size_t curr);
+t_ion_result_code ion_buffer_seek_write(t_ion_buffer *self, size_t curr);
 t_ion_result_code ion_buffer_write(t_ion_buffer *self, void *src, size_t len);
 t_ion_result_code ion_buffer_read(t_ion_buffer *self, void *dst, size_t len);
+t_ion_result_code ion_buffer_peek(t_ion_buffer *self, void *dst, size_t len);
 t_ion_result_code ion_buffer_reduce(t_ion_buffer *self);
 uint8_t *ion_buffer_consume(t_ion_buffer *self, size_t *len);
 

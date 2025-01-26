@@ -66,9 +66,11 @@ Test(vector, vector_write_array) {
 
   result = vector_write(vector, t, 1000000);
   cr_expect(result == RESULT_OK);
+  cr_expect(vector->curr_w == 1000000);
 
   result = vector_read(vector, o, 1000000);
   cr_expect(result == RESULT_OK);
+  cr_expect(vector->curr_r == 1000000);
 
   for (x = 0; x < 1000000; x++) {
     cr_expect(t[x] == o[x]);
@@ -94,6 +96,35 @@ Test(vector, vector_write_string) {
   result = vector_read(vector, dst, strlen(src));
   cr_expect(result == RESULT_OK);
 
+  cr_expect(strcmp(src, dst) == 0);
+}
+
+Test(vector, vector_peek) {
+  t_ion_result_code result;
+  t_ion_vector *vector;
+  char *src;
+  char dst[100] = {};
+
+  src = "And the earth was without form, and void;";
+
+  vector = vector_new(sizeof(char));
+  cr_expect(vector != NULL);
+  cr_expect(vector->curr_p == 0);
+
+  result = vector_write(vector, src, strlen(src));
+  cr_expect(result == RESULT_OK);
+  cr_expect(vector->curr_w == strlen(src));
+
+  result = vector_peek(vector, dst, strlen(src));
+  cr_expect(result == RESULT_OK);
+  cr_expect(vector->curr_r == 0);
+  cr_expect(vector->curr_p == strlen(src));
+  cr_expect(strcmp(src, dst) == 0);
+
+  result = vector_read(vector, dst, strlen(src));
+  cr_expect(result == RESULT_OK);
+  cr_expect(vector->curr_r == strlen(src));
+  cr_expect(vector->curr_p == vector->curr_r);
   cr_expect(strcmp(src, dst) == 0);
 }
 

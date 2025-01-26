@@ -10,6 +10,7 @@ t_ion_vector *vector_new(size_t unit) {
   self->size = SIZE_DEFAULT;
   self->curr_r = 0;
   self->curr_w = 0;
+  self->curr_p = 0;
   self->body = calloc(self->unit, self->size);
 
   return (self);
@@ -44,6 +45,7 @@ t_ion_result_code vector_seek_read(t_ion_vector *self, size_t index) {
     return RESULT_ERROR;
 
   self->curr_r = index;
+  self->curr_p = index;
 
   return RESULT_OK;
 }
@@ -126,6 +128,21 @@ t_ion_result_code vector_read(t_ion_vector *self, void *dst, size_t len) {
 
   memcpy(dst, self->body + (self->unit * self->curr_r), self->unit * len);
   self->curr_r += len;
+  self->curr_p = self->curr_r;
+
+  return RESULT_OK;
+}
+
+t_ion_result_code vector_peek(t_ion_vector *self, void *dst, size_t len) {
+  if (self == NULL)
+    return RESULT_ERROR;
+
+  if (len > (self->size - self->curr_p)) {
+    return RESULT_ERROR;
+  }
+
+  memcpy(dst, self->body + (self->unit * self->curr_p), self->unit * len);
+  self->curr_p += len;
 
   return RESULT_OK;
 }

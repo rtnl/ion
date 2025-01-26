@@ -20,6 +20,7 @@ typedef struct s_ion_vector {
     size_t size;
     size_t curr_r;
     size_t curr_w;
+    size_t curr_p;
 } t_ion_vector;
 
 typedef enum e_ion_result_code {
@@ -73,6 +74,7 @@ t_ion_result_code vector_seek_relative_write(t_ion_vector *self, size_t diff);
 t_ion_result_code vector_extend(t_ion_vector *self);
 t_ion_result_code vector_write(t_ion_vector *self, void *src, size_t len);
 t_ion_result_code vector_read(t_ion_vector *self, void *dst, size_t len);
+t_ion_result_code vector_peek(t_ion_vector *self, void *dst, size_t len);
 t_ion_result_code vector_get(t_ion_vector *self, void **value, size_t index);
 t_ion_result_code vector_set(t_ion_vector *self, void **value, size_t index);
 t_ion_result_code vector_reduce(t_ion_vector *self);

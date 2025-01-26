@@ -46,6 +46,13 @@ t_ion_result_code ion_buffer_seek_write(t_ion_buffer *self, size_t curr) {
   return vector_seek_write(self->body, curr);
 }
 
+t_ion_result_code ion_buffer_seek_peek(t_ion_buffer *self, size_t curr) {
+  if (self == NULL)
+    return RESULT_ERROR;
+
+  return vector_seek_peek(self->body, curr);
+}
+
 t_ion_result_code ion_buffer_write(t_ion_buffer *self, void *src, size_t len) {
   if (self == NULL)
     return RESULT_ERROR;

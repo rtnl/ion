@@ -65,6 +65,21 @@ t_ion_result_code vector_seek_write(t_ion_vector *self, size_t index) {
   return RESULT_OK;
 }
 
+t_ion_result_code vector_seek_peek(t_ion_vector *self, size_t index) {
+  if (self == NULL)
+    return RESULT_ERROR;
+
+  if (index < 0)
+    return RESULT_ERROR;
+
+  if (index >= self->size)
+    return RESULT_ERROR;
+
+  self->curr_p = index;
+
+  return RESULT_OK;
+}
+
 t_ion_result_code vector_seek_relative_read(t_ion_vector *self, int64_t diff) {
   if (self == NULL)
     return RESULT_ERROR;
@@ -77,6 +92,13 @@ t_ion_result_code vector_seek_relative_write(t_ion_vector *self, int64_t diff) {
     return RESULT_ERROR;
 
   return vector_seek_write(self, (size_t)((int64_t)self->curr_r + diff));
+}
+
+t_ion_result_code vector_seek_relative_peek(t_ion_vector *self, int64_t diff) {
+  if (self == NULL)
+    return RESULT_ERROR;
+
+  return vector_seek_peek(self, (size_t)((int64_t)self->curr_r + diff));
 }
 
 t_ion_result_code vector_extend(t_ion_vector *self) {

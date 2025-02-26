@@ -10,8 +10,9 @@ Test(vector, vector_create) {
   cr_expect(vector->body != NULL);
   cr_expect(vector->unit == sizeof(int32_t));
   cr_expect(vector->size > 0);
-  cr_expect(vector->curr_r == 0);
   cr_expect(vector->curr_w == 0);
+  cr_expect(vector->curr_r == 0);
+  cr_expect(vector->curr_p == 0);
 
   free(vector_consume(vector));
 }
@@ -41,10 +42,12 @@ Test(vector, vector_write_loop) {
   for (x = 0; x < 1024; x++) {
     cr_expect(vector->curr_w == x);
     cr_expect(vector->curr_r == 0);
+    cr_expect(vector->curr_p == 0);
     result = vector_write(vector, &x, 1);
     cr_expect(result == RESULT_OK);
     cr_expect(vector->curr_w == x + 1);
     cr_expect(vector->curr_r == 0);
+    cr_expect(vector->curr_p == 0);
   }
 
   free(vector_consume(vector));
@@ -120,16 +123,6 @@ Test(vector, vector_peek) {
   cr_expect(vector->curr_r == 0);
   cr_expect(vector->curr_p == strlen(src));
   cr_expect(strcmp(src, dst) == 0);
-
-  result = vector_read(vector, dst, strlen(src));
-  cr_expect(result == RESULT_OK);
-  cr_expect(vector->curr_r == strlen(src));
-  cr_expect(vector->curr_p == vector->curr_r);
-  cr_expect(strcmp(src, dst) == 0);
-
-  result = vector_seek_relative_read(vector, -10);
-  cr_expect(result == RESULT_OK);
-  cr_expect(vector->curr_p == vector->curr_r);
 }
 
 #endif

@@ -62,7 +62,7 @@ t_ion_result_code ion_buffer_state_io_write_increment(t_ion_buffer *self,
   if (self == NULL)
     return RESULT_ERROR;
 
-  state = self->state;
+  state = self->state_w;
 
   if (state->entry_level >= 0) {
     result =
@@ -104,7 +104,7 @@ t_ion_result_code ion_buffer_state_io_write_open(t_ion_buffer *self,
   if (self == NULL)
     return RESULT_ERROR;
 
-  state = self->state;
+  state = self->state_w;
   state->entry_level++;
 
   start = self->body->curr_w;
@@ -160,7 +160,7 @@ t_ion_result_code ion_buffer_state_io_write_close(t_ion_buffer *self) {
   if (self == NULL)
     return RESULT_ERROR;
 
-  state = self->state;
+  state = self->state_w;
 
   if (state->entry_level < 0)
     return RESULT_ERROR;
@@ -211,6 +211,15 @@ t_ion_result_code ion_buffer_state_io_read_increment(t_ion_buffer *self,
   return RESULT_OK;
 }
 
+t_ion_result_code ion_buffer_state_io_peek_increment(t_ion_buffer *self,
+                                                     t_ion_object_kind kind) {
+  if (self == NULL) {
+    return RESULT_ERROR;
+  }
+
+  return RESULT_OK;
+}
+
 t_ion_result_code ion_buffer_state_io_read_open(t_ion_buffer *self,
                                                 t_ion_object_kind kind,
                                                 t_ion_object_kind *kind_item,
@@ -224,10 +233,10 @@ t_ion_result_code ion_buffer_state_io_read_open(t_ion_buffer *self,
   if (self == NULL)
     return RESULT_ERROR;
 
-  state = self->state;
+  state = self->state_r;
   state->entry_level++;
 
-  start = self->body->curr_w;
+  start = self->body->curr_r;
 
   result = ion_buffer_io_read_kind(self, &val_kind);
   if (result != RESULT_OK) {
@@ -274,7 +283,76 @@ t_ion_result_code ion_buffer_state_io_read_close(t_ion_buffer *self) {
   if (self == NULL)
     return RESULT_ERROR;
 
-  state = self->state;
+  state = self->state_r;
+  state->entry_level--;
+
+  return RESULT_OK;
+}
+
+t_ion_result_code ion_buffer_state_io_peek_open(t_ion_buffer *self,
+                                                t_ion_object_kind kind,
+                                                t_ion_object_kind *kind_item,
+                                                uint8_t *len) {
+  t_ion_result_code result;
+  t_ion_buffer_state *state;
+  t_ion_buffer_state_io_entry *entry;
+  size_t start;
+  t_ion_object_kind val_kind;
+
+  if (self == NULL)
+    return RESULT_ERROR;
+
+  state = self->state_p;
+  state->entry_level++;
+
+  start = self->body->curr_p;
+
+  result = ion_buffer_io_peek_kind(self, &val_kind);
+  if (result != RESULT_OK) {
+    return (result);
+  }
+
+  switch (val_kind) {
+  case ARR: {
+    result = ion_buffer_io_peek_kind(self, &val_kind);
+    if (result != RESULT_OK) {
+      return (result);
+    }
+
+    *kind_item = val_kind;
+
+    result = ion_buffer_io_peek_data(self, U8, len);
+    if (result != RESULT_OK) {
+      return (result);
+    }
+
+    break;
+  }
+
+  case LIST:
+    break;
+
+  default:
+    return (RESULT_ERROR);
+  }
+
+  entry = ion_buffer_state_io_entry_new(kind, val_kind, start);
+  result = vector_write(state->entry_list, (void **)&entry, 1);
+  if (result != RESULT_OK) {
+    return (result);
+  }
+
+  return RESULT_OK;
+}
+
+t_ion_result_code ion_buffer_state_io_peek_close(t_ion_buffer *self) {
+  t_ion_result_code result;
+  t_ion_buffer_state *state;
+
+  if (self == NULL)
+    return RESULT_ERROR;
+
+  state = self->state_p;
   state->entry_level--;
 
   return RESULT_OK;

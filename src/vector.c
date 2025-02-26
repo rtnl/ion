@@ -8,8 +8,8 @@ t_ion_vector *vector_new(size_t unit) {
   self = (t_ion_vector *)malloc(sizeof(t_ion_vector));
   self->unit = unit;
   self->size = SIZE_DEFAULT;
-  self->curr_r = 0;
   self->curr_w = 0;
+  self->curr_r = 0;
   self->curr_p = 0;
   self->body = calloc(self->unit, self->size);
 
@@ -26,8 +26,9 @@ t_ion_vector *vector_clone(t_ion_vector *self) {
   other->body = calloc(self->unit, self->size);
   other->unit = self->unit;
   other->size = self->size;
-  other->curr_r = self->curr_r;
   other->curr_w = self->curr_w;
+  other->curr_r = self->curr_r;
+  other->curr_p = self->curr_p;
 
   memcpy(other->body, self->body, self->unit * self->size);
 
@@ -45,7 +46,6 @@ t_ion_result_code vector_seek_read(t_ion_vector *self, size_t index) {
     return RESULT_ERROR;
 
   self->curr_r = index;
-  self->curr_p = index;
 
   return RESULT_OK;
 }
@@ -91,14 +91,14 @@ t_ion_result_code vector_seek_relative_write(t_ion_vector *self, int64_t diff) {
   if (self == NULL)
     return RESULT_ERROR;
 
-  return vector_seek_write(self, (size_t)((int64_t)self->curr_r + diff));
+  return vector_seek_write(self, (size_t)((int64_t)self->curr_w + diff));
 }
 
 t_ion_result_code vector_seek_relative_peek(t_ion_vector *self, int64_t diff) {
   if (self == NULL)
     return RESULT_ERROR;
 
-  return vector_seek_peek(self, (size_t)((int64_t)self->curr_r + diff));
+  return vector_seek_peek(self, (size_t)((int64_t)self->curr_p + diff));
 }
 
 t_ion_result_code vector_extend(t_ion_vector *self) {

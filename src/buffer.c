@@ -5,7 +5,9 @@ t_ion_buffer *ion_buffer_new() {
 
   self = malloc(sizeof(t_ion_buffer));
   self->body = vector_new(sizeof(uint8_t));
-  self->state = ion_buffer_state_new();
+  self->state_w = ion_buffer_state_new();
+  self->state_r = ion_buffer_state_new();
+  self->state_p = ion_buffer_state_new();
 
   return (self);
 }
@@ -14,7 +16,9 @@ void ion_buffer_free(t_ion_buffer *self) {
   if (self == NULL)
     return;
 
-  ion_buffer_state_free(self->state);
+  ion_buffer_state_free(self->state_w);
+  ion_buffer_state_free(self->state_r);
+  ion_buffer_state_free(self->state_p);
   free(vector_consume(self->body));
   free(self);
 }
@@ -27,7 +31,9 @@ t_ion_buffer *ion_buffer_clone(t_ion_buffer *self) {
 
   other = malloc(sizeof(t_ion_buffer));
   other->body = vector_clone(self->body);
-  other->state = ion_buffer_state_clone(self->state);
+  other->state_w = ion_buffer_state_clone(self->state_w);
+  other->state_r = ion_buffer_state_clone(self->state_r);
+  other->state_p = ion_buffer_state_clone(self->state_p);
 
   return (other);
 }

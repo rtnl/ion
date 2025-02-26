@@ -18,8 +18,8 @@ typedef struct s_ion_vector {
     void *body;
     size_t unit;
     size_t size;
-    size_t curr_r;
     size_t curr_w;
+    size_t curr_r;
     size_t curr_p;
 } t_ion_vector;
 
@@ -52,7 +52,9 @@ typedef struct s_ion_buffer_state {
 
 typedef struct s_ion_buffer {
     t_ion_vector *body;
-    t_ion_buffer_state *state;
+    t_ion_buffer_state *state_w;
+    t_ion_buffer_state *state_r;
+    t_ion_buffer_state *state_p;
 } t_ion_buffer;
 
 // math
@@ -102,17 +104,21 @@ void ion_buffer_state_free(t_ion_buffer_state *self);
 t_ion_buffer_state *ion_buffer_state_clone(t_ion_buffer_state *self);
 t_ion_result_code ion_buffer_state_io_write_increment(t_ion_buffer *self, t_ion_object_kind kind);
 t_ion_result_code ion_buffer_state_io_read_increment(t_ion_buffer *self, t_ion_object_kind kind);
+t_ion_result_code ion_buffer_state_io_peek_increment(t_ion_buffer *self, t_ion_object_kind kind);
 t_ion_buffer_state_io_entry *ion_buffer_state_io_entry_new(t_ion_object_kind kind, t_ion_object_kind item, size_t start);
 void ion_buffer_state_io_entry_free(t_ion_buffer_state_io_entry *self);
 t_ion_result_code ion_buffer_state_io_write_open(t_ion_buffer *self, t_ion_object_kind kind, t_ion_object_kind item);
 t_ion_result_code ion_buffer_state_io_write_close(t_ion_buffer *self);
 t_ion_result_code ion_buffer_state_io_read_open(t_ion_buffer *self, t_ion_object_kind kind, t_ion_object_kind *kind_item, uint8_t *len);
 t_ion_result_code ion_buffer_state_io_read_close(t_ion_buffer *self);
+t_ion_result_code ion_buffer_state_io_peek_open(t_ion_buffer *self, t_ion_object_kind kind, t_ion_object_kind *kind_item, uint8_t *len);
+t_ion_result_code ion_buffer_state_io_peek_close(t_ion_buffer *self);
 
 // buffer_io
 t_ion_result_code ion_buffer_io_write_kind(t_ion_buffer *self, t_ion_object_kind value);
 t_ion_result_code ion_buffer_io_write_data(t_ion_buffer *self, t_ion_object_kind kind, void *src);
 t_ion_result_code ion_buffer_io_read_kind(t_ion_buffer *self, t_ion_object_kind *value);
+t_ion_result_code ion_buffer_io_peek_kind(t_ion_buffer *self, t_ion_object_kind *value);
 t_ion_result_code ion_buffer_io_check_kind(t_ion_buffer *self, t_ion_object_kind expected);
 t_ion_result_code ion_buffer_io_write_u0(t_ion_buffer *self);
 t_ion_result_code ion_buffer_io_write_u8(t_ion_buffer *self, uint8_t value);
@@ -133,5 +139,15 @@ t_ion_result_code ion_buffer_io_read_arr_open(t_ion_buffer *self, t_ion_object_k
 t_ion_result_code ion_buffer_io_read_arr_close(t_ion_buffer *self);
 t_ion_result_code ion_buffer_io_read_list_open(t_ion_buffer *self, uint8_t *len);
 t_ion_result_code ion_buffer_io_read_list_close(t_ion_buffer *self);
+t_ion_result_code ion_buffer_io_peek_data(t_ion_buffer *self, t_ion_object_kind kind, void *dst);
+t_ion_result_code ion_buffer_io_peek_u0(t_ion_buffer *self);
+t_ion_result_code ion_buffer_io_peek_u8(t_ion_buffer *self, uint8_t *value);
+t_ion_result_code ion_buffer_io_peek_u16(t_ion_buffer *self, uint16_t *value);
+t_ion_result_code ion_buffer_io_peek_u32(t_ion_buffer *self, uint32_t *value);
+t_ion_result_code ion_buffer_io_peek_u64(t_ion_buffer *self, uint64_t *value);
+t_ion_result_code ion_buffer_io_peek_arr_open(t_ion_buffer *self, t_ion_object_kind *kind, uint8_t *len);
+t_ion_result_code ion_buffer_io_peek_arr_close(t_ion_buffer *self);
+t_ion_result_code ion_buffer_io_peek_list_open(t_ion_buffer *self, uint8_t *len);
+t_ion_result_code ion_buffer_io_peek_list_close(t_ion_buffer *self);
 
 #endif

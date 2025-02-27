@@ -260,8 +260,14 @@ t_ion_result_code ion_buffer_state_io_read_open(t_ion_buffer *self,
     break;
   }
 
-  case LIST:
+  case LIST: {
+    result = ion_buffer_io_read_data(self, U8, len);
+    if (result != RESULT_OK) {
+      return result;
+    }
+
     break;
+  }
 
   default:
     return (RESULT_ERROR);
@@ -329,8 +335,14 @@ t_ion_result_code ion_buffer_state_io_peek_open(t_ion_buffer *self,
     break;
   }
 
-  case LIST:
+  case LIST: {
+    result = ion_buffer_io_read_data(self, U8, len);
+    if (result != RESULT_OK) {
+      return result;
+    }
+
     break;
+  }
 
   default:
     return (RESULT_ERROR);

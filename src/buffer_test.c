@@ -147,4 +147,53 @@ Test(buffer, buffer_io_u64) {
   ion_buffer_free(buffer);
 }
 
+typedef struct s_ion_buffer_test {
+  char *s;
+  uint64_t t;
+} t_buffer_test;
+
+Test(buffer, buffer_encode_struct) {
+  t_buffer_test object;
+  t_buffer_test other;
+  t_ion_buffer *buffer;
+  t_ion_result_code result;
+
+  object.s = "hello world";
+  object.t = 1337;
+
+  buffer = ion_buffer_new();
+  cr_expect(buffer != NULL);
+
+  result = ion_buffer_io_write_arr_open(buffer, U8);
+  cr_expect(result == RESULT_OK);
+
+  for (uint8_t x = 0; object.s[x]; x++) {
+    result = ion_buffer_io_write_u8(buffer, object.s[x]);
+    cr_expect(result == RESULT_OK);
+  }
+
+  result = ion_buffer_io_write_arr_close(buffer);
+  cr_expect(result == RESULT_OK);
+
+  result = ion_buffer_io_write_u64(buffer, object.t);
+  cr_expect(result == RESULT_OK);
+
+  size_t len_expected = 23;
+  uint8_t data_expected[23] = {
+      0x05,                                                          // type ARR
+      0x01,                                                          // item U8
+      0x0B,                                                          // len  11
+      'h',  'e',  'l',  'l',  'o',  ' ',  'w',  'o',  'r', 'l', 'd', // text
+
+      0x04,                                           // type U64
+      0x39, 0x05, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // value 1337
+  };
+
+  size_t len = 0;
+  uint8_t *data = ion_buffer_consume(ion_buffer_clone(buffer), &len);
+
+  cr_expect(len == len_expected);
+  cr_expect(memcmp(data, data_expected, 23) == 0);
+}
+
 #endif

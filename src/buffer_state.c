@@ -291,6 +291,7 @@ t_ion_result_code ion_buffer_state_io_read_close(t_ion_buffer *self) {
 
   state = self->state_r;
   state->entry_level--;
+  vector_seek_relative_write(state->entry_list, -1);
 
   return RESULT_OK;
 }
@@ -366,6 +367,7 @@ t_ion_result_code ion_buffer_state_io_peek_close(t_ion_buffer *self) {
 
   state = self->state_p;
   state->entry_level--;
+  vector_seek_relative_write(state->entry_list, -1);
 
   return RESULT_OK;
 }

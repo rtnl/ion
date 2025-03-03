@@ -285,11 +285,25 @@ t_ion_result_code ion_buffer_state_io_read_open(t_ion_buffer *self,
 t_ion_result_code ion_buffer_state_io_read_close(t_ion_buffer *self) {
   t_ion_result_code result;
   t_ion_buffer_state *state;
+  t_ion_buffer_state_io_entry **entry_ptr;
+  t_ion_buffer_state_io_entry *entry;
 
   if (self == NULL)
     return RESULT_ERROR;
 
   state = self->state_r;
+
+  if (state->entry_level < 0)
+    return RESULT_ERROR;
+
+  result =
+      vector_get(state->entry_list, (void **)&entry_ptr, state->entry_level);
+  if (result != RESULT_OK)
+    return result;
+
+  entry = *entry_ptr;
+  ion_buffer_state_io_entry_free(entry);
+
   state->entry_level--;
   vector_seek_relative_write(state->entry_list, -1);
 
@@ -361,11 +375,25 @@ t_ion_result_code ion_buffer_state_io_peek_open(t_ion_buffer *self,
 t_ion_result_code ion_buffer_state_io_peek_close(t_ion_buffer *self) {
   t_ion_result_code result;
   t_ion_buffer_state *state;
+  t_ion_buffer_state_io_entry **entry_ptr;
+  t_ion_buffer_state_io_entry *entry;
 
   if (self == NULL)
     return RESULT_ERROR;
 
   state = self->state_p;
+
+  if (state->entry_level < 0)
+    return RESULT_ERROR;
+
+  result =
+      vector_get(state->entry_list, (void **)&entry_ptr, state->entry_level);
+  if (result != RESULT_OK)
+    return result;
+
+  entry = *entry_ptr;
+  ion_buffer_state_io_entry_free(entry);
+
   state->entry_level--;
   vector_seek_relative_write(state->entry_list, -1);
 

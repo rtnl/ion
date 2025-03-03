@@ -194,6 +194,9 @@ Test(buffer, buffer_encode_struct) {
 
   cr_expect(len == len_expected);
   cr_expect(memcmp(data, data_expected, 23) == 0);
+  free(data);
+
+  ion_buffer_free(buffer);
 }
 
 Test(buffer, buffer_encode_nested) {

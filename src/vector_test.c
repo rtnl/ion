@@ -56,8 +56,8 @@ Test(vector, vector_write_loop) {
 Test(vector, vector_write_array) {
   t_ion_result_code result;
   t_ion_vector *vector;
-  int32_t t[1000000] = {0};
-  int32_t o[1000000] = {0};
+  int32_t *t = calloc(1000000, sizeof(int));
+  int32_t *o = calloc(1000000, sizeof(int));
   int32_t x;
 
   vector = vector_new(sizeof(int32_t));
@@ -80,6 +80,8 @@ Test(vector, vector_write_array) {
   }
 
   free(vector_consume(vector));
+  free(t);
+  free(o);
 }
 
 Test(vector, vector_write_string) {
@@ -100,6 +102,8 @@ Test(vector, vector_write_string) {
   cr_expect(result == RESULT_OK);
 
   cr_expect(strcmp(src, dst) == 0);
+
+  free(vector_consume(vector));
 }
 
 Test(vector, vector_peek) {
@@ -123,6 +127,8 @@ Test(vector, vector_peek) {
   cr_expect(vector->curr_r == 0);
   cr_expect(vector->curr_p == strlen(src));
   cr_expect(strcmp(src, dst) == 0);
+
+  free(vector_consume(vector));
 }
 
 #endif

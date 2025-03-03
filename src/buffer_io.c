@@ -37,13 +37,15 @@ t_ion_result_code ion_buffer_io_write_kind(t_ion_buffer *self,
     }
   }
 
+  if (!flag) {
+    return RESULT_OK;
+  }
+
   index = ion_object_kind_index(kind);
 
-  if (flag == true) {
-    result = ion_buffer_write(self, &index, sizeof(index));
-    if (result != RESULT_OK) {
-      return result;
-    }
+  result = ion_buffer_write(self, &index, sizeof(index));
+  if (result != RESULT_OK) {
+    return result;
   }
 
   return RESULT_OK;

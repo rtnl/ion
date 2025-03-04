@@ -32,8 +32,29 @@ t_ion_buffer_state *ion_buffer_state_new() {
 }
 
 void ion_buffer_state_free(t_ion_buffer_state *self) {
+  t_ion_result_code result;
+  t_ion_buffer_state_io_entry **entry_ptr;
+  t_ion_buffer_state_io_entry *entry;
+  int32_t x;
+
   if (self == NULL)
     return;
+
+  for (x = 0; x < self->entry_level; x++) {
+    entry_ptr = NULL;
+
+    result = vector_get(self->entry_list, (void **)&entry, x);
+    if (result != RESULT_OK) {
+      continue;
+    }
+
+    if (entry_ptr == NULL) {
+      continue;
+    }
+
+    entry = *entry_ptr;
+    ion_buffer_state_io_entry_free(entry);
+  }
 
   free(vector_consume(self->entry_list));
   free(self);

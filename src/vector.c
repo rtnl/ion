@@ -206,23 +206,29 @@ t_ion_result_code vector_set(t_ion_vector *self, void **value, size_t index) {
 }
 
 t_ion_result_code vector_reduce(t_ion_vector *self) {
-  size_t offset;
-  size_t size;
-  void *buffer;
+  size_t size_min;
+  size_t size_max;
+  size_t len_min;
+  size_t len_max;
+  void *body;
 
   if (self == NULL) {
     return RESULT_ERROR;
   }
 
-  // Todo: realloc and shrink
-  offset = min_sizet(self->curr_r, self->curr_w);
-  size = self->unit * self->size;
-  buffer = malloc(size);
-  memcpy(buffer, self->body + offset, size - offset);
+  size_min = min_sizet(self->curr_w, min_sizet(self->curr_r, self->curr_p));
+  size_max = max_sizet(self->curr_w, max_sizet(self->curr_r, self->curr_p));
+  len_min = size_min * self->unit;
+  len_max = size_max * self->unit;
+
+  // Todo: realloc
+  body = calloc(self->size, self->unit);
+  memcpy(body, self->body + len_min, len_max);
   free(self->body);
-  self->body = buffer;
-  self->curr_r -= offset;
-  self->curr_w -= offset;
+  self->body = body;
+  self->curr_w -= size_min;
+  self->curr_r -= size_min;
+  self->curr_p -= size_min;
 
   return RESULT_OK;
 }

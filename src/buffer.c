@@ -38,6 +38,39 @@ t_ion_buffer *ion_buffer_clone(t_ion_buffer *self) {
   return (other);
 }
 
+t_ion_result_code ion_buffer_reset_write(t_ion_buffer *self) {
+  if (self == NULL) {
+    return RESULT_ERROR;
+  }
+
+  ion_buffer_state_free(self->state_w);
+  self->state_w = ion_buffer_state_new();
+
+  return RESULT_OK;
+}
+
+t_ion_result_code ion_buffer_reset_read(t_ion_buffer *self) {
+  if (self == NULL) {
+    return RESULT_ERROR;
+  }
+
+  ion_buffer_state_free(self->state_r);
+  self->state_r = ion_buffer_state_new();
+
+  return RESULT_OK;
+}
+
+t_ion_result_code ion_buffer_reset_peek(t_ion_buffer *self) {
+  if (self == NULL) {
+    return RESULT_ERROR;
+  }
+
+  ion_buffer_state_free(self->state_p);
+  self->state_p = ion_buffer_state_new();
+
+  return RESULT_OK;
+}
+
 t_ion_result_code ion_buffer_seek_read(t_ion_buffer *self, size_t curr) {
   if (self == NULL)
     return RESULT_ERROR;

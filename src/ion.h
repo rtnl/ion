@@ -123,7 +123,8 @@ t_ion_result_code ion_buffer_io_write_kind(t_ion_buffer *self, t_ion_object_kind
 t_ion_result_code ion_buffer_io_write_data(t_ion_buffer *self, t_ion_object_kind kind, void *src);
 t_ion_result_code ion_buffer_io_read_kind(t_ion_buffer *self, t_ion_object_kind *value);
 t_ion_result_code ion_buffer_io_peek_kind(t_ion_buffer *self, t_ion_object_kind *value);
-t_ion_result_code ion_buffer_io_check_kind(t_ion_buffer *self, t_ion_object_kind expected);
+t_ion_result_code ion_buffer_io_read_check_kind(t_ion_buffer *self, t_ion_object_kind expected);
+t_ion_result_code ion_buffer_io_peek_check_kind(t_ion_buffer *self, t_ion_object_kind expected);
 t_ion_result_code ion_buffer_io_write_u0(t_ion_buffer *self);
 t_ion_result_code ion_buffer_io_write_u8(t_ion_buffer *self, uint8_t value);
 t_ion_result_code ion_buffer_io_write_u16(t_ion_buffer *self, uint16_t value);

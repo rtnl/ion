@@ -581,6 +581,22 @@ t_ion_result_code ion_buffer_io_read_arr_open(t_ion_buffer *self,
   return RESULT_OK;
 }
 
+t_ion_result_code ion_buffer_io_read_arr_check(t_ion_buffer *self,
+                                               t_ion_object_kind kind_item,
+                                               uint8_t len) {
+  if (self == NULL)
+    return RESULT_NULL;
+
+  size_t m = self->body->curr_w - self->body->curr_r;
+  size_t s = ion_object_kind_size(kind_item) * len;
+
+  if (m < s) {
+    return RESULT_IO_TOO_SMALL;
+  }
+
+  return RESULT_OK;
+}
+
 t_ion_result_code ion_buffer_io_read_arr_close(t_ion_buffer *self) {
   t_ion_result_code result;
 
@@ -780,6 +796,22 @@ t_ion_result_code ion_buffer_io_peek_arr_open(t_ion_buffer *self,
   result = ion_buffer_state_io_peek_open(self, ARR, kind, len);
   if (result != RESULT_OK) {
     return RESULT_ERROR;
+  }
+
+  return RESULT_OK;
+}
+
+t_ion_result_code ion_buffer_io_peek_arr_check(t_ion_buffer *self,
+                                               t_ion_object_kind kind_item,
+                                               uint8_t len) {
+  if (self == NULL)
+    return RESULT_NULL;
+
+  size_t m = self->body->curr_w - self->body->curr_p;
+  size_t s = ion_object_kind_size(kind_item) * len;
+
+  if (m < s) {
+    return RESULT_IO_TOO_SMALL;
   }
 
   return RESULT_OK;

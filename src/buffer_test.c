@@ -147,6 +147,59 @@ Test(buffer, buffer_io_u64) {
   ion_buffer_free(buffer);
 }
 
+Test(buffer, buffer_io_arr_check) {
+  t_ion_result_code result;
+  t_ion_buffer *buffer;
+  t_ion_object_kind kind;
+  uint8_t len;
+
+  buffer = ion_buffer_new();
+  cr_expect(buffer != NULL);
+
+  result = ion_buffer_io_write_arr_open(buffer, U32);
+  cr_expect(result == RESULT_OK);
+
+  for (uint8_t x = 0; x < 100; x++) {
+    ion_buffer_io_write_u32(buffer, 1337);
+    cr_expect(result == RESULT_OK);
+  }
+
+  result = ion_buffer_io_write_arr_close(buffer);
+  cr_expect(result == RESULT_OK);
+
+  result = ion_buffer_io_read_arr_open(buffer, &kind, &len);
+  cr_expect(result == RESULT_OK);
+
+  result = ion_buffer_io_read_arr_check(buffer, kind, 99);
+  cr_expect(result == RESULT_OK);
+
+  result = ion_buffer_io_read_arr_check(buffer, kind, 100);
+  cr_expect(result == RESULT_OK);
+
+  result = ion_buffer_io_read_arr_check(buffer, kind, 101);
+  cr_expect(result == RESULT_IO_TOO_SMALL);
+
+  result = ion_buffer_io_read_arr_close(buffer);
+  cr_expect(result == RESULT_OK);
+
+  result = ion_buffer_io_peek_arr_open(buffer, &kind, &len);
+  cr_expect(result == RESULT_OK);
+
+  result = ion_buffer_io_peek_arr_check(buffer, kind, 99);
+  cr_expect(result == RESULT_OK);
+
+  result = ion_buffer_io_peek_arr_check(buffer, kind, 100);
+  cr_expect(result == RESULT_OK);
+
+  result = ion_buffer_io_peek_arr_check(buffer, kind, 101);
+  cr_expect(result == RESULT_IO_TOO_SMALL);
+
+  result = ion_buffer_io_peek_arr_close(buffer);
+  cr_expect(result == RESULT_OK);
+
+  ion_buffer_free(buffer);
+}
+
 typedef struct s_ion_buffer_test {
   char *s;
   uint64_t t;

@@ -1,6 +1,8 @@
-![screenshot](../data/icon.png)
+![icon](../data/icon.png)
 
 # Ion
+
+[![Test](https://github.com/rtnl/ion/actions/workflows/test.yml/badge.svg)](https://github.com/rtnl/ion/actions/workflows/test.yml)
 
 Ion is a minimalist binary format for structured data.
 

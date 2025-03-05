@@ -26,6 +26,9 @@ typedef struct s_ion_vector {
 typedef enum e_ion_result_code {
     RESULT_OK,
     RESULT_ERROR,
+    RESULT_NULL,
+    RESULT_IO_TOO_SMALL,
+    RESULT_IO_TOO_LARGE,
 } t_ion_result_code;
 
 typedef enum e_ion_object_kind {

@@ -40,7 +40,7 @@ t_ion_buffer *ion_buffer_clone(t_ion_buffer *self) {
 
 t_ion_result_code ion_buffer_reset_write(t_ion_buffer *self) {
   if (self == NULL) {
-    return RESULT_ERROR;
+    return RESULT_NULL;
   }
 
   ion_buffer_state_free(self->state_w);
@@ -51,7 +51,7 @@ t_ion_result_code ion_buffer_reset_write(t_ion_buffer *self) {
 
 t_ion_result_code ion_buffer_reset_read(t_ion_buffer *self) {
   if (self == NULL) {
-    return RESULT_ERROR;
+    return RESULT_NULL;
   }
 
   ion_buffer_state_free(self->state_r);
@@ -62,7 +62,7 @@ t_ion_result_code ion_buffer_reset_read(t_ion_buffer *self) {
 
 t_ion_result_code ion_buffer_reset_peek(t_ion_buffer *self) {
   if (self == NULL) {
-    return RESULT_ERROR;
+    return RESULT_NULL;
   }
 
   ion_buffer_state_free(self->state_p);
@@ -73,42 +73,42 @@ t_ion_result_code ion_buffer_reset_peek(t_ion_buffer *self) {
 
 t_ion_result_code ion_buffer_seek_read(t_ion_buffer *self, size_t curr) {
   if (self == NULL)
-    return RESULT_ERROR;
+    return RESULT_NULL;
 
   return vector_seek_read(self->body, curr);
 }
 
 t_ion_result_code ion_buffer_seek_write(t_ion_buffer *self, size_t curr) {
   if (self == NULL)
-    return RESULT_ERROR;
+    return RESULT_NULL;
 
   return vector_seek_write(self->body, curr);
 }
 
 t_ion_result_code ion_buffer_seek_peek(t_ion_buffer *self, size_t curr) {
   if (self == NULL)
-    return RESULT_ERROR;
+    return RESULT_NULL;
 
   return vector_seek_peek(self->body, curr);
 }
 
 t_ion_result_code ion_buffer_write(t_ion_buffer *self, void *src, size_t len) {
   if (self == NULL)
-    return RESULT_ERROR;
+    return RESULT_NULL;
 
   return vector_write(self->body, src, len);
 }
 
 t_ion_result_code ion_buffer_read(t_ion_buffer *self, void *dst, size_t len) {
   if (self == NULL)
-    return RESULT_ERROR;
+    return RESULT_NULL;
 
   return vector_read(self->body, dst, len);
 }
 
 t_ion_result_code ion_buffer_peek(t_ion_buffer *self, void *dst, size_t len) {
   if (self == NULL)
-    return RESULT_ERROR;
+    return RESULT_NULL;
 
   return vector_peek(self->body, dst, len);
 }
@@ -117,7 +117,7 @@ t_ion_result_code ion_buffer_reduce(t_ion_buffer *self) {
   t_ion_result_code result;
 
   if (self == NULL) {
-    return RESULT_ERROR;
+    return RESULT_NULL;
   }
 
   result = vector_reduce(self->body);

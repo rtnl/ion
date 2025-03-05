@@ -81,17 +81,26 @@ t_ion_result_code ion_buffer_state_io_write_increment(t_ion_buffer *self,
   t_ion_buffer_state_io_entry *entry;
 
   if (self == NULL)
-    return RESULT_ERROR;
+    return RESULT_NULL;
 
   state = self->state_w;
+  if (state == NULL)
+    return RESULT_NULL;
 
   if (state->entry_level >= 0) {
+    entry_ptr = NULL;
+
     result =
         vector_get(state->entry_list, (void **)&entry_ptr, state->entry_level);
     if (result != RESULT_OK)
       return result;
 
+    if (entry_ptr == NULL)
+      return RESULT_NULL;
+
     entry = *entry_ptr;
+    if (entry == NULL)
+      return RESULT_NULL;
 
     switch (entry->kind) {
     case ARR: {
@@ -123,9 +132,12 @@ t_ion_result_code ion_buffer_state_io_write_open(t_ion_buffer *self,
   uint8_t val_len;
 
   if (self == NULL)
-    return RESULT_ERROR;
+    return RESULT_NULL;
 
   state = self->state_w;
+  if (state == NULL)
+    return RESULT_NULL;
+
   state->entry_level++;
 
   start = self->body->curr_w;
@@ -179,19 +191,29 @@ t_ion_result_code ion_buffer_state_io_write_close(t_ion_buffer *self) {
   uint8_t *entry_length_ptr;
 
   if (self == NULL)
-    return RESULT_ERROR;
+    return RESULT_NULL;
 
   state = self->state_w;
+  if (state == NULL)
+    return RESULT_NULL;
 
   if (state->entry_level < 0)
     return RESULT_ERROR;
+
+  entry_ptr = NULL;
 
   result =
       vector_get(state->entry_list, (void **)&entry_ptr, state->entry_level);
   if (result != RESULT_OK)
     return result;
 
+  if (entry_ptr == NULL)
+    return RESULT_NULL;
+
   entry = *entry_ptr;
+  if (entry == NULL)
+    return RESULT_NULL;
+
   entry_length = entry->length;
   entry_length_ptr = &entry_length;
 
@@ -227,7 +249,7 @@ t_ion_result_code ion_buffer_state_io_write_close(t_ion_buffer *self) {
 t_ion_result_code ion_buffer_state_io_read_increment(t_ion_buffer *self,
                                                      t_ion_object_kind kind) {
   if (self == NULL)
-    return RESULT_ERROR;
+    return RESULT_NULL;
 
   return RESULT_OK;
 }
@@ -235,7 +257,7 @@ t_ion_result_code ion_buffer_state_io_read_increment(t_ion_buffer *self,
 t_ion_result_code ion_buffer_state_io_peek_increment(t_ion_buffer *self,
                                                      t_ion_object_kind kind) {
   if (self == NULL) {
-    return RESULT_ERROR;
+    return RESULT_NULL;
   }
 
   return RESULT_OK;
@@ -252,9 +274,18 @@ t_ion_result_code ion_buffer_state_io_read_open(t_ion_buffer *self,
   t_ion_object_kind val_kind;
 
   if (self == NULL)
-    return RESULT_ERROR;
+    return RESULT_NULL;
+
+  if (kind_item == NULL)
+    return RESULT_NULL;
+
+  if (len == NULL)
+    return RESULT_NULL;
 
   state = self->state_r;
+  if (state == NULL)
+    return RESULT_NULL;
+
   state->entry_level++;
 
   start = self->body->curr_r;
@@ -295,6 +326,7 @@ t_ion_result_code ion_buffer_state_io_read_open(t_ion_buffer *self,
   }
 
   entry = ion_buffer_state_io_entry_new(kind, val_kind, start);
+
   result = vector_write(state->entry_list, (void **)&entry, 1);
   if (result != RESULT_OK) {
     return (result);
@@ -310,23 +342,35 @@ t_ion_result_code ion_buffer_state_io_read_close(t_ion_buffer *self) {
   t_ion_buffer_state_io_entry *entry;
 
   if (self == NULL)
-    return RESULT_ERROR;
+    return RESULT_NULL;
 
   state = self->state_r;
+  if (state == NULL)
+    return RESULT_NULL;
 
   if (state->entry_level < 0)
     return RESULT_ERROR;
+
+  entry_ptr = NULL;
 
   result =
       vector_get(state->entry_list, (void **)&entry_ptr, state->entry_level);
   if (result != RESULT_OK)
     return result;
 
+  if (entry_ptr == NULL)
+    return RESULT_NULL;
+
   entry = *entry_ptr;
+  if (entry == NULL)
+    return RESULT_NULL;
+
   ion_buffer_state_io_entry_free(entry);
 
   state->entry_level--;
-  vector_seek_relative_write(state->entry_list, -1);
+  result = vector_seek_relative_write(state->entry_list, -1);
+  if (result != RESULT_OK)
+    return result;
 
   return RESULT_OK;
 }
@@ -342,49 +386,55 @@ t_ion_result_code ion_buffer_state_io_peek_open(t_ion_buffer *self,
   t_ion_object_kind val_kind;
 
   if (self == NULL)
-    return RESULT_ERROR;
+    return RESULT_NULL;
+
+  if (kind_item == NULL)
+    return RESULT_NULL;
+
+  if (len == NULL)
+    return RESULT_NULL;
 
   state = self->state_p;
+  if (state == NULL)
+    return RESULT_NULL;
+
   state->entry_level++;
 
   start = self->body->curr_p;
 
   result = ion_buffer_io_peek_kind(self, &val_kind);
-  if (result != RESULT_OK) {
-    return (result);
-  }
+  if (result != RESULT_OK)
+    return result;
 
   switch (val_kind) {
   case ARR: {
     result = ion_buffer_io_peek_kind(self, &val_kind);
-    if (result != RESULT_OK) {
-      return (result);
-    }
+    if (result != RESULT_OK)
+      return result;
 
     *kind_item = val_kind;
 
     result = ion_buffer_io_peek_data(self, U8, len);
-    if (result != RESULT_OK) {
-      return (result);
-    }
+    if (result != RESULT_OK)
+      return result;
 
     break;
   }
 
   case LIST: {
     result = ion_buffer_io_read_data(self, U8, len);
-    if (result != RESULT_OK) {
+    if (result != RESULT_OK)
       return result;
-    }
 
     break;
   }
 
   default:
-    return (RESULT_ERROR);
+    return RESULT_ERROR;
   }
 
   entry = ion_buffer_state_io_entry_new(kind, val_kind, start);
+
   result = vector_write(state->entry_list, (void **)&entry, 1);
   if (result != RESULT_OK) {
     return (result);
@@ -400,23 +450,36 @@ t_ion_result_code ion_buffer_state_io_peek_close(t_ion_buffer *self) {
   t_ion_buffer_state_io_entry *entry;
 
   if (self == NULL)
-    return RESULT_ERROR;
+    return RESULT_NULL;
 
   state = self->state_p;
+  if (state == NULL)
+    return RESULT_NULL;
 
   if (state->entry_level < 0)
     return RESULT_ERROR;
+
+  entry_ptr = NULL;
 
   result =
       vector_get(state->entry_list, (void **)&entry_ptr, state->entry_level);
   if (result != RESULT_OK)
     return result;
 
+  if (entry_ptr == NULL)
+    return RESULT_NULL;
+
   entry = *entry_ptr;
+  if (entry == NULL)
+    return RESULT_NULL;
+
   ion_buffer_state_io_entry_free(entry);
 
   state->entry_level--;
-  vector_seek_relative_write(state->entry_list, -1);
+
+  result = vector_seek_relative_write(state->entry_list, -1);
+  if (result != RESULT_OK)
+    return result;
 
   return RESULT_OK;
 }

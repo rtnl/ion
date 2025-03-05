@@ -37,7 +37,7 @@ t_ion_vector *vector_clone(t_ion_vector *self) {
 
 t_ion_result_code vector_seek_read(t_ion_vector *self, size_t index) {
   if (self == NULL)
-    return RESULT_ERROR;
+    return RESULT_NULL;
 
   if (index < 0)
     return RESULT_ERROR;
@@ -52,7 +52,7 @@ t_ion_result_code vector_seek_read(t_ion_vector *self, size_t index) {
 
 t_ion_result_code vector_seek_write(t_ion_vector *self, size_t index) {
   if (self == NULL)
-    return RESULT_ERROR;
+    return RESULT_NULL;
 
   if (index < 0)
     return RESULT_ERROR;
@@ -67,7 +67,7 @@ t_ion_result_code vector_seek_write(t_ion_vector *self, size_t index) {
 
 t_ion_result_code vector_seek_peek(t_ion_vector *self, size_t index) {
   if (self == NULL)
-    return RESULT_ERROR;
+    return RESULT_NULL;
 
   if (index < 0)
     return RESULT_ERROR;
@@ -82,21 +82,21 @@ t_ion_result_code vector_seek_peek(t_ion_vector *self, size_t index) {
 
 t_ion_result_code vector_seek_relative_read(t_ion_vector *self, int64_t diff) {
   if (self == NULL)
-    return RESULT_ERROR;
+    return RESULT_NULL;
 
   return vector_seek_read(self, (size_t)((int64_t)self->curr_r + diff));
 }
 
 t_ion_result_code vector_seek_relative_write(t_ion_vector *self, int64_t diff) {
   if (self == NULL)
-    return RESULT_ERROR;
+    return RESULT_NULL;
 
   return vector_seek_write(self, (size_t)((int64_t)self->curr_w + diff));
 }
 
 t_ion_result_code vector_seek_relative_peek(t_ion_vector *self, int64_t diff) {
   if (self == NULL)
-    return RESULT_ERROR;
+    return RESULT_NULL;
 
   return vector_seek_peek(self, (size_t)((int64_t)self->curr_p + diff));
 }
@@ -104,6 +104,9 @@ t_ion_result_code vector_seek_relative_peek(t_ion_vector *self, int64_t diff) {
 t_ion_result_code vector_extend(t_ion_vector *self) {
   void *body;
   size_t size;
+
+  if (self == NULL)
+    return RESULT_NULL;
 
   size = self->size * 2;
   body = calloc(self->unit, size);
@@ -123,7 +126,10 @@ t_ion_result_code vector_write(t_ion_vector *self, void *src, size_t len) {
   size_t curr_total;
 
   if (self == NULL)
-    return RESULT_ERROR;
+    return RESULT_NULL;
+
+  if (src == NULL)
+    return RESULT_NULL;
 
   len_total = self->unit * len;
   curr_total = self->unit * self->curr_w;
@@ -142,7 +148,10 @@ t_ion_result_code vector_write(t_ion_vector *self, void *src, size_t len) {
 
 t_ion_result_code vector_read(t_ion_vector *self, void *dst, size_t len) {
   if (self == NULL)
-    return RESULT_ERROR;
+    return RESULT_NULL;
+
+  if (dst == NULL)
+    return RESULT_NULL;
 
   if (len > (self->size - self->curr_r)) {
     return RESULT_ERROR;
@@ -157,7 +166,10 @@ t_ion_result_code vector_read(t_ion_vector *self, void *dst, size_t len) {
 
 t_ion_result_code vector_peek(t_ion_vector *self, void *dst, size_t len) {
   if (self == NULL)
-    return RESULT_ERROR;
+    return RESULT_NULL;
+
+  if (dst == NULL)
+    return RESULT_NULL;
 
   if (len > (self->size - self->curr_p)) {
     return RESULT_ERROR;
@@ -171,10 +183,10 @@ t_ion_result_code vector_peek(t_ion_vector *self, void *dst, size_t len) {
 
 t_ion_result_code vector_get(t_ion_vector *self, void **value, size_t index) {
   if (self == NULL)
-    return RESULT_ERROR;
+    return RESULT_NULL;
 
   if (value == NULL)
-    return RESULT_ERROR;
+    return RESULT_NULL;
 
   if (index < 0)
     return RESULT_ERROR;
@@ -189,10 +201,10 @@ t_ion_result_code vector_get(t_ion_vector *self, void **value, size_t index) {
 
 t_ion_result_code vector_set(t_ion_vector *self, void **value, size_t index) {
   if (self == NULL)
-    return RESULT_ERROR;
+    return RESULT_NULL;
 
   if (value == NULL)
-    return RESULT_ERROR;
+    return RESULT_NULL;
 
   if (index < 0)
     return RESULT_ERROR;
@@ -213,7 +225,7 @@ t_ion_result_code vector_reduce(t_ion_vector *self) {
   void *body;
 
   if (self == NULL) {
-    return RESULT_ERROR;
+    return RESULT_NULL;
   }
 
   size_min = min_sizet(self->curr_w, min_sizet(self->curr_r, self->curr_p));
@@ -236,6 +248,9 @@ t_ion_result_code vector_reduce(t_ion_vector *self) {
 void *vector_consume(t_ion_vector *self) {
   void *result;
 
+  if (self == NULL)
+    return NULL;
+
   result = self->body;
   free(self);
 
@@ -243,6 +258,11 @@ void *vector_consume(t_ion_vector *self) {
 }
 
 void vector_display(t_ion_vector *self) {
+  if (self == NULL) {
+    printf("vector->null\n");
+    return;
+  }
+
   printf("vector->[");
   printf(";unit=%lu;size=%lu;curr_r=%lu;curr_w=%lu", self->unit, self->size,
          self->curr_r, self->curr_w);

@@ -27,6 +27,8 @@ typedef enum e_ion_result_code {
     RESULT_OK,
     RESULT_ERROR,
     RESULT_NULL,
+    RESULT_IO_ERROR,
+    RESULT_IO_CLOSED,
     RESULT_IO_TOO_SMALL,
     RESULT_IO_TOO_LARGE,
 } t_ion_result_code;
